@@ -10,7 +10,7 @@ My implementation deals with a simple case, where we know the distribution of th
 ## Data Generation
 I generate n data points from a 3 different normal distributions, each having different mean and variance. These n data-points are mixed together, and their distribution is hidden.
 
-Following is a density plot of 1000 different data-points generated from 3 different normal distributions with means 5, 10, 15 and variances 1, 2 and 4 respectively.
+Following is a density plot of 1000 different data-points generated from 3 different normal distributions with means 5, 10, 12 and variances 1, 2 and 4 respectively.
 
 ![Data Generation](/data_points.png)
 
@@ -20,7 +20,7 @@ The data is then fed into the expectation maximization algorithm. The aim of the
 Following figure shows the estimations of the underlying distriubtions at different stages of the algorithm.
 ![Iterations](/Iterations.png)
 
-I ran the algorithm for 150 iterations, and extracted the estimations at that point.
+I ran the algorithm for 100 iterations, and extracted the estimations at that point.
 
 Following figure shows the estimations of the latent variables as compared to the actual values of the latent variables.
 ![Comparison](/differnce.png)
