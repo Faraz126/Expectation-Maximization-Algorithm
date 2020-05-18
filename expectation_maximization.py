@@ -66,28 +66,32 @@ def expectation_maximization(data, n_clust, with_plot = False, max_iter = 50) ->
     vars = [np.random.randint(low=1, high=20, size=1)[0] for i in range(n_clust)]
 
     pi = [np.random.sample() for i in range(n_clust)]
-    pi = softmax(pi)
+    pi = softmax(pi) #to make the random probabilites sum to 1
 
     probabilites = [[pi[j] for i in data] for j in range(n_clust)]
     iter_num = 0
-    if with_plot:
+    if with_plot: #setting up logistics for plotting
         progress = 0
         plot_num = 0
         fig, axs = plt.subplots(2, 3)
     while iter_num <= max_iter:
 
         for n in range(n_clust):
-            current_pi = pi[n]
+            current_pi = pi[n] #probability for current distribution
             for i in range(len(data)):
+                #E-step
                 xi = data[i]
+                #calculating the probability that the observation belongs to n'th cluster
                 numerator = stats.norm.pdf(x = xi, loc = means[n], scale = math.sqrt(vars[n])) * current_pi
                 denominator = sum([stats.norm.pdf(x = xi, loc = means[k], scale = math.sqrt(vars[k])) * (pi[k]) for k in range(n_clust)])
-                #denominator = numerator + (stats.norm.pdf(x = xi, loc = means[1], scale = math.sqrt(vars[1])) * (1 - pi))
-                prob = numerator/denominator
-                probabilites[n][i] = prob
-                #probabilites[1][i] = 1 - prob
 
+                prob = numerator/denominator
+                probabilites[n][i] = prob #probabilty that the data point belongs to n'th cluster
+
+
+        #M-Step
         for n in range(len(means)):
+            #recalculating means and variances based on probabilities computed earlier
             means[n] = sum([probabilites[n][i] * data[i] for i in range(len(data))])/sum(probabilites[n])
             vars[n] = sum([probabilites[n][i] * ((data[i] - means[n])**2) for i in range(len(data))])/sum(probabilites[n])
 
@@ -111,6 +115,9 @@ def expectation_maximization(data, n_clust, with_plot = False, max_iter = 50) ->
 
 
 def plot_means_variances(names, true_means, estimated_means, true_vars, estimated_vars):
+    """
+    function to plot true means and variacnes in comparison with estimated means and variances.
+    """
     fig, axs = plt.subplots(2, 1)
     width = 0.20
     axs[0].bar([i for i in range(len(names))], true_means, width = width, label = "True Means")
@@ -155,9 +162,9 @@ def plot_means_variances(names, true_means, estimated_means, true_vars, estimate
 if __name__ == "__main__":
     plt.style.use('seaborn')
     n = 1000 #number of points to generate
-    true_means = [5, 10, 15]
+    true_means = [5, 10, 13]
     true_vars = [1, 2, 4]
-    clusters = 3
+    clusters = 3 #number of hidden clusters
     names = ["Cluster " + str(i + 1) for i in range(clusters)]
 
     data = data_generation(n = n, clusters= clusters, means= true_means, vars=true_vars)
